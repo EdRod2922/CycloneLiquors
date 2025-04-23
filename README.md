@@ -1,4 +1,6 @@
-# Cyclone Liquors Database
+# Cyclone Liquors Database ![Built with SQL](https://img.shields.io/badge/Built%20with-SQL-blue) ![Project Status: Completed](https://img.shields.io/badge/Project%20Status-Completed-brightgreen)
+
+
 
 ## Overview
 This project is a SQL-based database designed for Cyclone Liquors, a liquor store located in Ames, Iowa. The database centralizes product information, inventory tracking, supplier details, and sales transactions to enhance operations and provide meaningful business insights.
