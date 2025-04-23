@@ -1,4 +1,4 @@
-# Cyclone Liquors Database ![Built with SQL](https://img.shields.io/badge/Built%20with-SQL-blue) ![Project Status: Completed](https://img.shields.io/badge/Project%20Status-Completed-brightgreen)
+# Cyclone Liquors Database ![Built with SQL](https://img.shields.io/badge/Built%20with-SQL-blue) 
 
 
 
