@@ -1,0 +1,300 @@
+DROP DATABASE IF EXISTS Cyclone_Liquors;
+CREATE DATABASE Cyclone_Liquors;
+USE Cyclone_Liquors;
+
+CREATE TABLE CUSTOMER (
+    CUSTOMER_ID INT PRIMARY KEY NOT NULL,
+    FIRST_NAME VARCHAR(20) NOT NULL,
+    LAST_NAME VARCHAR(20) NOT NULL,
+    DATE_OF_BIRTH DATE NOT NULL,
+    PHONE_NUM VARCHAR(15)
+);
+
+CREATE TABLE EMPLOYEE (
+    EMPLOYEE_ID INT PRIMARY KEY NOT NULL,
+    EMPLOYEE_FIRST_NAME VARCHAR(25) NOT NULL,
+    EMPLOYEE_LAST_NAME VARCHAR(25) NOT NULL,
+    EMPLOYEE_ROLE VARCHAR(50) NOT NULL,
+    CONTACT_INFO TEXT NOT NULL,
+    HIRE_DATE DATE NOT NULL
+);
+
+CREATE TABLE ORDER_DETAILS (
+    ORDER_ID INT PRIMARY KEY NOT NULL,
+    EMPLOYEE_ID INT NOT NULL,
+    CUSTOMER_ID INT NOT NULL,
+    ORDER_DATE DATE NOT NULL,
+    ORDER_AMOUNT DECIMAL(10 , 2 ) NOT NULL,
+    PAYMENT_METHOD VARCHAR(30) NOT NULL,
+    FOREIGN KEY (EMPLOYEE_ID)
+        REFERENCES EMPLOYEE (EMPLOYEE_ID),
+    FOREIGN KEY (CUSTOMER_ID)
+        REFERENCES CUSTOMER (CUSTOMER_ID)
+);
+
+CREATE TABLE PRODUCT (
+    PRODUCT_ID INT PRIMARY KEY NOT NULL,
+    PRODUCT_NAME VARCHAR(20) NOT NULL,
+    PRODUCT_DESCRIPTION TEXT NOT NULL,
+    PRODUCT_PRICE DECIMAL(10 , 2 ) NOT NULL,
+    STOCK_QUANTITY INT
+);
+
+CREATE TABLE ORDER_ITEM (
+    ORDER_ITEM_ID INT PRIMARY KEY NOT NULL,
+    ORDER_ID INT NOT NULL,
+    PRODUCT_ID INT NOT NULL,
+    QUANTITY INT NOT NULL,
+    SUBTOTAL DECIMAL(10,2),
+    FOREIGN KEY (ORDER_ID) REFERENCES ORDER_DETAILS(ORDER_ID),
+    FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCT(PRODUCT_ID)
+);
+
+CREATE TABLE PRODUCT_CATEGORY (
+    CATEGORY_ID INT PRIMARY KEY NOT NULL,
+    CATEGORY_NAME VARCHAR(100) NOT NULL,
+    PARENT_CATEGORY_ID INT NULL
+);
+
+CREATE TABLE INVENTORY (
+    INVENTORY_ID INT PRIMARY KEY NOT NULL,
+    PRODUCT_ID INT NOT NULL,
+    QUANTITY_IN_STOCK INT NOT NULL,
+    REORDER_LEVEL INT NOT NULL,
+    LAST_RESTOCK DATE NOT NULL,
+    LOCATION VARCHAR(100),
+    FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCT(PRODUCT_ID)
+);
+
+CREATE TABLE SUPPLIER (
+    SUPPLIER_ID INT PRIMARY KEY NOT NULL,
+    SUPPLIER_NAME VARCHAR(100) NOT NULL,
+    ADDRESS TEXT NOT NULL,
+    CITY TEXT NOT NULL,
+    STATE VARCHAR(2),
+    ZIP_CODE VARCHAR(5),
+    PHONE_NUM VARCHAR (15)
+);
+
+CREATE TABLE RESTOCK_ORDER (
+    RESTOCK_ORDER_ID INT PRIMARY KEY NOT NULL,
+    SUPPLIER_ID INT NOT NULL,
+    ORDER_DATE DATE NOT NULL,
+    EXPECTED_DELIVERY DATE NOT NULL,
+    STATUS VARCHAR(30) NOT NULL,
+    PRODUCT_ID INT NOT NULL,
+    QUANTITY_ORDERED INT NOT NULL,
+    COST DECIMAL(10,2),
+    
+    FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCT(PRODUCT_ID),
+    FOREIGN KEY (SUPPLIER_ID) REFERENCES SUPPLIER(SUPPLIER_ID)
+);
+
+-- Inserting into SUPPLIER
+INSERT INTO SUPPLIER VALUES
+(1, 'Smith Liquor Co.', '123 Main St', 'Scottsbluff', 'NE', '69361', '555-1010'),
+(2, 'Best Spirits', '456 Oak Ave', 'Grand Island', 'NE', '68801', '555-2020'),
+(3, 'Wine & More', '789 Pine St', 'Lincoln', 'NE', '68508', '555-3030'),
+(4, 'Premium Liquor', '101 Maple Dr', 'Omaha', 'NE', '68102', '555-4040'),
+(5, 'Gulf Spirits', '202 Birch Ln', 'Ames', 'IA', '50010', '555-5050'),
+(6, 'Highway Liquor', '303 Cedar Blvd', 'Cedar Rapids', 'IA', '52401', '555-6060'),
+(7, 'Iowa Wine Distributors', '404 Elm St', 'Des Moines', 'IA', '50309', '555-7070'),
+(8, 'Beverage Depot', '505 Redwood Dr', 'Iowa City', 'IA', '52240', '555-8080'),
+(9, 'North Liquors', '606 Oakwood Ln', 'Cedar Falls', 'IA', '50613', '555-9090'),
+(10, 'Sunset Spirits', '707 Pinewood Ave', 'Dallas', 'TX', '75201', '555-1011'),
+(11, 'El Paso Liquors', '808 Birch St', 'El Paso', 'TX', '79901', '555-2022'),
+(12, 'Sierra Wine', '909 Maplewood Dr', 'Phoenix', 'AZ', '85001', '555-3033'),
+(13, 'Golden State Spirits', '1001 Palm St', 'Las Vegas', 'NV', '89101', '555-4044'),
+(14, 'Baja Liquors', '1101 Spruce Ave', 'Los Angeles', 'CA', '90001', '555-5055'),
+(15, 'Desert Breeze Liquor', '1201 Willow Dr', 'Tucson', 'AZ', '85701', '555-6066'),
+(16, 'Florida Spirits', '1301 Ocean Blvd', 'Miami', 'FL', '33101', '555-7077'),
+(17, 'Empire Liquors', '1401 River Rd', 'New York', 'NY', '10001', '555-8088'),
+(18, 'Louisiana Liquor Co.', '1501 Magnolia St', 'New Orleans', 'LA', '70112', '555-9099'),
+(19, 'Mountain High Liquor', '1601 Pinecrest Dr', 'Salt Lake City', 'UT', '84101', '555-1212'),
+(20, 'Nebraska Spirits', '1701 Red Rock Rd', 'Kearney', 'NE', '68847', '555-2323');
+
+-- Inserting into PRODUCT
+INSERT INTO PRODUCT VALUES
+(1, 'Vodka', 'Absolut, Premium', 19.99, 100),
+(2, 'Whiskey', 'Jack Daniel’s, Tennessee', 29.99, 50),
+(3, 'Tequila', 'Don Julio, Blanco', 25.49, 75),
+(4, 'Rum', 'Bacardi, Superior', 18.99, 80),
+(5, 'Gin', 'Tanqueray, London Dry', 22.99, 60),
+(6, 'Brandy', 'Hennessy, VS', 35.99, 40),
+(7, 'Red Wine', 'Robert Mondavi, Cabernet Sauvignon', 14.99, 120),
+(8, 'White Wine', 'Rombauer, Chardonnay', 13.99, 110),
+(9, 'Champagne', 'Moët & Chandon, Impérial Brut', 49.99, 30),
+(10, 'Cognac', 'Remy Martin, VSOP', 55.99, 20),
+(11, 'Scotch', 'Glenfiddich, 12 Year Old', 42.99, 25),
+(12, 'Vodka', 'Grey Goose, Original', 24.99, 90),
+(13, 'Whiskey', 'Jameson, Irish', 27.99, 70),
+(14, 'Tequila', 'Casamigos, Blanco', 30.49, 60),
+(15, 'Rum', 'Captain Morgan, Original Spiced', 21.99, 85),
+(16, 'Gin', 'Bombay Sapphire, London Dry', 28.99, 50),
+(17, 'Brandy', 'E&J, VS', 23.49, 65),
+(18, 'Red Wine', 'La Crema, Pinot Noir', 16.99, 95),
+(19, 'White Wine', 'Kim Crawford, Sauvignon Blanc', 15.49, 100),
+(20, 'Champagne', 'Veuve Clicquot, Yellow Label', 59.99, 15);
+
+
+-- Inserting into CUSTOMER
+INSERT INTO CUSTOMER VALUES
+(1, 'John', 'Doe', '1990-05-15', '555-1234'),
+(2, 'Jane', 'Smith', '1988-07-22', '555-5678'),
+(3, 'Alice', 'Johnson', '1995-03-10', '555-8765'),
+(4, 'Bob', 'Brown', '1985-01-30', '555-4321'),
+(5, 'Charlie', 'Davis', '1992-08-14', '555-2468'),
+(6, 'Eve', 'Miller', '1989-11-02', '555-1357'),
+(7, 'Frank', 'Wilson', '1975-12-25', '555-9753'),
+(8, 'Grace', 'Moore', '1998-02-20', '555-8642'),
+(9, 'Hank', 'Taylor', '1993-06-18', '555-7531'),
+(10, 'Ivy', 'Anderson', '1987-09-09', '555-1597'),
+(11, 'Jack', 'Thomas', '1991-04-27', '555-3571'),
+(12, 'Karen', 'White', '1983-10-12', '555-9513'),
+(13, 'Leo', 'Harris', '1979-05-05', '555-7539'),
+(14, 'Mia', 'Martin', '1994-07-07', '555-1593'),
+(15, 'Nina', 'Thompson', '1986-03-17', '555-3579'),
+(16, 'Oscar', 'Garcia', '1981-01-01', '555-1239'),
+(17, 'Pam', 'Martinez', '1990-02-14', '555-5679'),
+(18, 'Quinn', 'Robinson', '1992-12-12', '555-8769'),
+(19, 'Rick', 'Clark', '1996-08-08', '555-4329'),
+(20, 'Sara', 'Rodriguez', '1984-06-06', '555-2469');
+
+-- Inserting into EMPLOYEE
+INSERT INTO EMPLOYEE VALUES
+(1, 'John', 'Doe', 'Manager', '555-1122, johndoe@example.com', '2010-01-15'),
+(2, 'Jane', 'Smith', 'Sales Associate', '555-2233, janesmith@example.com', '2013-03-10'),
+(3, 'Michael', 'Johnson', 'Cashier', '555-3344, michaeljohnson@example.com', '2015-06-01'),
+(4, 'Emily', 'Williams', 'Sales Associate', '555-4455, emilywilliams@example.com', '2016-07-22'),
+(5, 'Daniel', 'Jones', 'Stock Clerk', '555-5566, danieljones@example.com', '2017-02-13'),
+(6, 'Sarah', 'Brown', 'Manager', '555-6677, sarahbrown@example.com', '2012-11-03'),
+(7, 'David', 'Davis', 'Cashier', '555-7788, daviddavis@example.com', '2018-04-10'),
+(8, 'Linda', 'Miller', 'Sales Associate', '555-8899, lindamiller@example.com', '2020-09-25'),
+(9, 'Robert', 'Wilson', 'Security', '555-9900, robertwilson@example.com', '2019-12-30'),
+(10, 'Karen', 'Moore', 'Stock Clerk', '555-1001, karenmoore@example.com', '2021-05-11'),
+(11, 'James', 'Taylor', 'Manager', '555-1123, jamestaylor@example.com', '2008-04-08'),
+(12, 'Betty', 'Thomas', 'Sales Associate', '555-2234, bettythomas@example.com', '2014-06-17'),
+(13, 'Charles', 'Jackson', 'Security', '555-3345, charlesjackson@example.com', '2017-08-04'),
+(14, 'Michelle', 'Martin', 'Cashier', '555-4456, michellemartin@example.com', '2018-09-06'),
+(15, 'William', 'Lee', 'Sales Associate', '555-5567, williamlee@example.com', '2020-02-15'),
+(16, 'Jessica', 'Harris', 'Stock Clerk', '555-6678, jessicaharris@example.com', '2019-10-30'),
+(17, 'Thomas', 'Clark', 'Manager', '555-7789, thomasclark@example.com', '2011-12-01'),
+(18, 'Patricia', 'Rodriguez', 'Sales Associate', '555-8890, patriciarodriguez@example.com', '2016-03-28'),
+(19, 'Christopher', 'Lewis', 'Security', '555-9901, christopherlewis@example.com', '2021-01-05'),
+(20, 'Nancy', 'Walker', 'Stock Clerk', '555-1002, nancywalker@example.com', '2020-07-17');
+
+-- Inserting into ORDER_DETAILS
+INSERT INTO ORDER_DETAILS VALUES
+(1, 1, 5, '2022-05-10', 100.50, 'Credit Card'),
+(2, 2, 8, '2021-11-25', 200.75, 'Cash'),
+(3, 3, 12, '2023-02-14', 50.25, 'Debit Card'),
+(4, 4, 3, '2023-06-01', 75.90, 'Credit Card'),
+(5, 5, 6, '2022-08-20', 150.60, 'PayPal'),
+(6, 6, 10, '2021-09-15', 120.80, 'Debit Card'),
+(7, 7, 9, '2023-01-05', 90.30, 'Credit Card'),
+(8, 8, 13, '2021-12-10', 60.50, 'Cash'),
+(9, 9, 7, '2023-04-20', 45.40, 'PayPal'),
+(10, 10, 15, '2022-11-01', 110.00, 'Credit Card'),
+(11, 11, 1, '2022-07-10', 80.10, 'Debit Card'),
+(12, 12, 14, '2021-10-12', 140.75, 'Cash'),
+(13, 13, 2, '2023-03-30', 65.50, 'Credit Card'),
+(14, 14, 16, '2022-06-25', 130.20, 'PayPal'),
+(15, 15, 19, '2021-04-07', 55.80, 'Debit Card'),
+(16, 16, 4, '2023-05-17', 120.95, 'Credit Card'),
+(17, 17, 17, '2021-12-01', 95.00, 'Cash'),
+(18, 18, 18, '2023-01-23', 85.60, 'PayPal'),
+(19, 19, 20, '2021-08-05', 70.00, 'Credit Card'),
+(20, 20, 11, '2023-02-19', 55.25, 'Debit Card');
+
+-- Inserting into ORDER_ITEM
+INSERT INTO ORDER_ITEM (ORDER_ITEM_ID, ORDER_ID, PRODUCT_ID, QUANTITY, SUBTOTAL) VALUES
+(1, 1, 1, 2, 39.98),
+(2, 2, 2, 3, 44.97),
+(3, 3, 4, 1, 22.99),
+(4, 4, 3, 3, 15.99),
+(5, 5, 5, 2, 59.98),
+(6, 6, 6, 1, 22.99),
+(7, 7, 7, 4, 49.96),
+(8, 8, 8, 3, 29.97),
+(9, 9, 9, 2, 39.98),
+(10, 10, 10, 5, 119.95),
+(11, 11, 11, 1, 24.99),
+(12, 12, 12, 3, 89.97),
+(13, 13, 13, 2, 34.98),
+(14, 14, 14, 4, 69.96),
+(15, 15, 15, 1, 22.49),
+(16, 16, 16, 6, 129.94),
+(17, 17, 17, 2, 39.98),
+(18, 18, 18, 3, 74.97),
+(19, 19, 19, 1, 19.99),
+(20, 20, 20, 5, 104.95);
+
+-- Inserting into PRODUCT_CATEGORY
+INSERT INTO PRODUCT_CATEGORY (CATEGORY_ID, CATEGORY_NAME, PARENT_CATEGORY_ID) VALUES
+(1, 'Vodka', NULL),  -- No parent category needed, it's a top-level category
+(2, 'Whiskey', NULL),  -- No parent category needed, it's a top-level category
+(3, 'Tequila', NULL),  -- No parent category needed, it's a top-level category
+(4, 'Rum', NULL),  -- No parent category needed, it's a top-level category
+(5, 'Gin', NULL),  -- No parent category needed, it's a top-level category
+(6, 'Brandy', NULL),  -- No parent category needed, it's a top-level category
+(7, 'Red Wine', NULL),  -- No parent category needed, it's a top-level category
+(8, 'White Wine', NULL),  -- No parent category needed, it's a top-level category
+(9, 'Champagne', NULL),  -- No parent category needed, it's a top-level category
+(10, 'Cognac', NULL),  -- No parent category needed, it's a top-level category
+(11, 'Scotch', NULL),  -- No parent category needed, it's a top-level category
+(12, 'Liqueurs', 1),  -- Parent: Vodka (Category 1)
+(13, 'Beer', NULL),  -- No parent category needed, it's a top-level category
+(14, 'Mezcal', 3),  -- Parent: Tequila (Category 3)
+(15, 'Cider', 13),  -- Parent: Beer (Category 13)
+(16, 'Port Wine', 7),  -- Parent: Red Wine (Category 7)
+(17, 'Sake', NULL),  -- No parent category needed, it's a top-level category
+(18, 'Absinthe', 12),  -- Parent: Liqueurs (Category 12)
+(19, 'Fortified Wine', 7),  -- Parent: Red Wine (Category 7)
+(20, 'Baijiu', NULL);  -- No parent category needed, it's a top-level category
+
+-- Inserting into INVENTORY
+INSERT INTO INVENTORY VALUES
+(1, 1, 50, 10, '2025-03-01', 'Aisle 1, Shelf 3'),
+(2, 2, 30, 5, '2025-03-10', 'Aisle 2, Shelf 1'),
+(3, 3, 60, 15, '2025-03-05', 'Aisle 3, Shelf 4'),
+(4, 4, 80, 20, '2025-03-12', 'Aisle 4, Shelf 2'),
+(5, 5, 100, 30, '2025-03-08', 'Aisle 1, Shelf 5'),
+(6, 6, 40, 10, '2025-03-03', 'Aisle 2, Shelf 3'),
+(7, 7, 120, 25, '2025-03-07', 'Aisle 3, Shelf 1'),
+(8, 8, 110, 20, '2025-03-11', 'Aisle 4, Shelf 3'),
+(9, 9, 30, 8, '2025-03-15', 'Aisle 5, Shelf 2'),
+(10, 10, 25, 5, '2025-03-09', 'Aisle 5, Shelf 1'),
+(11, 11, 45, 12, '2025-03-04', 'Aisle 6, Shelf 4'),
+(12, 12, 55, 18, '2025-03-13', 'Aisle 7, Shelf 3'),
+(13, 13, 70, 14, '2025-03-14', 'Aisle 8, Shelf 2'),
+(14, 14, 35, 10, '2025-03-16', 'Aisle 9, Shelf 5'),
+(15, 15, 50, 15, '2025-03-18', 'Aisle 1, Shelf 2'),
+(16, 16, 60, 20, '2025-03-17', 'Aisle 2, Shelf 4'),
+(17, 17, 75, 18, '2025-03-19', 'Aisle 3, Shelf 5'),
+(18, 18, 90, 25, '2025-03-20', 'Aisle 4, Shelf 1'),
+(19, 19, 40, 8, '2025-03-21', 'Aisle 5, Shelf 3'),
+(20, 20, 20, 4, '2025-03-22', 'Aisle 6, Shelf 1');
+
+
+-- Inserting into RESTOCK
+INSERT INTO RESTOCK_ORDER (RESTOCK_ORDER_ID, SUPPLIER_ID, ORDER_DATE, EXPECTED_DELIVERY, STATUS, PRODUCT_ID, QUANTITY_ORDERED, COST) VALUES
+(1, 1, '2025-04-01', '2025-04-05', 'Pending', 1, 50, 999.50),
+(2, 2, '2025-04-02', '2025-04-06', 'Delivered', 2, 100, 2999.00),
+(3, 3, '2025-04-03', '2025-04-07', 'Shipped', 3, 75, 1896.75),
+(4, 4, '2025-04-04', '2025-04-08', 'Pending', 4, 60, 1139.40),
+(5, 1, '2025-04-05', '2025-04-09', 'Delivered', 5, 120, 2758.80),
+(6, 2, '2025-04-06', '2025-04-10', 'Shipped', 6, 85, 1464.15),
+(7, 3, '2025-04-07', '2025-04-11', 'Pending', 7, 100, 1499.00),
+(8, 4, '2025-04-08', '2025-04-12', 'Delivered', 8, 90, 1259.10),
+(9, 1, '2025-04-09', '2025-04-13', 'Shipped', 9, 40, 1999.60),
+(10, 2, '2025-04-10', '2025-04-14', 'Pending', 10, 30, 1679.70),
+(11, 3, '2025-04-11', '2025-04-15', 'Delivered', 11, 50, 2149.50),
+(12, 4, '2025-04-12', '2025-04-16', 'Shipped', 12, 110, 3188.90),
+(13, 1, '2025-04-13', '2025-04-17', 'Pending', 13, 80, 1899.20),
+(14, 2, '2025-04-14', '2025-04-18', 'Delivered', 14, 120, 3658.80),
+(15, 3, '2025-04-15', '2025-04-19', 'Shipped', 15, 70, 1534.30),
+(16, 4, '2025-04-16', '2025-04-20', 'Pending', 16, 100, 2399.00),
+(17, 1, '2025-04-17', '2025-04-21', 'Delivered', 17, 65, 1524.85),
+(18, 2, '2025-04-18', '2025-04-22', 'Shipped', 18, 50, 1049.50),
+(19, 3, '2025-04-19', '2025-04-23', 'Pending', 19, 60, 929.40),
+(20, 4, '2025-04-20', '2025-04-24', 'Delivered', 20, 90, 5399.10);
