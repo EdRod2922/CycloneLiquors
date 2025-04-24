@@ -20,7 +20,6 @@ This project is a SQL-based database designed for Cyclone Liquors, a liquor stor
 1. Clone the repository.
 2. Set up the database using the provided SQL scripts.
 3. Connect to your local SQL server and execute the scripts.
-4. Populate the database with sample or real data.
 
 ## Future Improvements
 - Develop a user interface for easier data management.
